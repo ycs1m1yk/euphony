@@ -1,5 +1,6 @@
 package co.euphony.rx;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteOrder;
@@ -63,11 +64,6 @@ public abstract class FFTStrategy {
 
     void releaseAllBuffers() {
         recycleSamples.clear();
-        try {
-            destroyDirectByteBuffer(recycleSamples);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
         recycleSamples = null;
 
         recycleSpectrum.clear();
