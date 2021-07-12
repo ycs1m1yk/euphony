@@ -25,6 +25,6 @@ public class KissFFTWrapper extends FFTStrategy {
     @Override
     public void finish() {
         fft.dispose();
-        System.gc();
+        releaseAllBuffers();
     }
 }

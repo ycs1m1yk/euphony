@@ -1,5 +1,7 @@
 package co.euphony.rx;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.ByteOrder;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -52,11 +54,22 @@ public abstract class FFTStrategy {
             sb.clear();
         }
 
+        sb = null;
         return result;
     }
 
     public abstract FloatBuffer makeSpectrum(ShortBuffer samples, FloatBuffer spectrum);
     public abstract void finish();
+
+    void releaseAllBuffers() {
+        recycleSamples.clear();
+        recycleSamples = null;
+
+        recycleSpectrum.clear();
+        recycleSpectrum = null;
+
+        System.gc();
+    }
 
     public int getFFTSize() {
         return fftSize;
@@ -90,6 +103,30 @@ public abstract class FFTStrategy {
 
     private ShortBuffer makeShortBuffer(short[] inputShortArray) {
         return makeByteBuffer(inputShortArray.length * 2).asShortBuffer().put(inputShortArray);
+    }
+
+    /**
+     * DirectByteBuffers are garbage collected by using a phantom reference and a
+     * reference queue. Every once a while, the JVM checks the reference queue and
+     * cleans the DirectByteBuffers. However, as this doesn't happen
+     * immediately after discarding all references to a DirectByteBuffer, it's
+     * easy to OutOfMemoryError yourself using DirectByteBuffers. This function
+     * explicitly calls the Cleaner method of a DirectByteBuffer.
+     *
+     * @param toBeDestroyed
+     *          The DirectByteBuffer that will be "cleaned". Utilizes reflection.
+     *
+     */
+    public static void destroyDirectByteBuffer(ByteBuffer toBeDestroyed)
+            throws IllegalArgumentException, IllegalAccessException,
+            InvocationTargetException, SecurityException, NoSuchMethodException {
+
+        Method cleanerMethod = toBeDestroyed.getClass().getMethod("cleaner");
+        cleanerMethod.setAccessible(true);
+        Object cleaner = cleanerMethod.invoke(toBeDestroyed);
+        Method cleanMethod = cleaner.getClass().getMethod("clean");
+        cleanMethod.setAccessible(true);
+        cleanMethod.invoke(cleaner);
     }
 
 
