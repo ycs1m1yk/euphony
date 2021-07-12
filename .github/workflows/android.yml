@@ -31,4 +31,4 @@ jobs:
         api-level: ${{ matrix.api-level }}
         target: ${{ matrix.target }}
         arch: ${{ matrix.arch }}
-        script: ./gradlew connectedCheck
+        script: ./gradlew connectedCheck --stacktrace
