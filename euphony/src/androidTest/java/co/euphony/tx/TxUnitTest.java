@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.test.filters.SmallTest;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +75,12 @@ public class TxUnitTest {
         fft = new KissFFTWrapper(512);
     }
 
+    @After
+    public void finish() {
+        fft.finish();
+        fft = null;
+    }
+
     @Test
     /* Default Tx & Rx Test */
     public void tx_rx_default_test() {
@@ -86,7 +93,6 @@ public class TxUnitTest {
 
         FloatBuffer[] buf = fft.makeSpectrum(txManager.getOutStream());
         assertEquals(expectedBufferLength, buf.length);
-        fft.finish();
 
         for(int i = 0; i < buf.length; i++) {
             float[] floatArray;

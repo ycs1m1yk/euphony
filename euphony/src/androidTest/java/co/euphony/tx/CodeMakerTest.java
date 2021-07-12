@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.test.filters.SmallTest;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +55,12 @@ public class CodeMakerTest {
         fft = new KissFFTWrapper(512);
     }
 
+    @After
+    public void finish() {
+        fft.finish();
+        fft = null;
+    }
+
     private int getMaxIndexOfFrequencies(float[] array) {
         int maxIndex = 0;
         float maxValue = 0;
@@ -85,7 +92,6 @@ public class CodeMakerTest {
 
         FloatBuffer[] buf = fft.makeSpectrum(stream);
         assertEquals(expectedBufferLength, buf.length);
-        fft.finish();
 
         int codeLength = (expectedBufferLength >> 3);
         for(int i = 0; i < codeLength; i++) {
