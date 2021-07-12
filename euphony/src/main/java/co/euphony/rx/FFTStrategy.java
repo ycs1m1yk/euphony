@@ -33,12 +33,11 @@ public abstract class FFTStrategy {
 
     public FloatBuffer[] makeSpectrum(short[] inputShortSamples) {
         int lenSamples = inputShortSamples.length;
-        FloatBuffer[] result;// = makeFloatBuffer(lenSamples);
         int cycleCount = 1;
         if(lenSamples > shortBufferSize) {
             cycleCount = lenSamples / shortBufferSize;
         }
-        result = new FloatBuffer[cycleCount];
+       FloatBuffer[] result = new FloatBuffer[cycleCount];
 
         ShortBuffer sb = makeShortBuffer(shortBufferSize);
         for(int i = 0; i < cycleCount; i++)
@@ -58,7 +57,6 @@ public abstract class FFTStrategy {
 
     public abstract FloatBuffer makeSpectrum(ShortBuffer samples, FloatBuffer spectrum);
     public abstract void finish();
-
 
     public int getFFTSize() {
         return fftSize;
