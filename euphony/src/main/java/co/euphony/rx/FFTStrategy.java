@@ -63,6 +63,11 @@ public abstract class FFTStrategy {
 
     void releaseAllBuffers() {
         recycleSamples.clear();
+        try {
+            destroyDirectByteBuffer(recycleSamples);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         recycleSamples = null;
 
         recycleSpectrum.clear();
