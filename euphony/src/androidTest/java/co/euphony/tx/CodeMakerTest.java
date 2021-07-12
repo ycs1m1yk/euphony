@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.test.filters.SmallTest;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -43,10 +44,14 @@ public class CodeMakerTest {
     int expectedStreamLength;
     int expectedBufferLength;
     public CodeMakerTest(String expectedGenCode, int expectedStreamLength, int expectedBufferLength) {
-        fft = new KissFFTWrapper(512);
         this.expectedGenCode = expectedGenCode;
         this.expectedStreamLength = expectedStreamLength;
         this.expectedBufferLength = expectedBufferLength;
+    }
+    
+    @Before
+    public void setup() {
+        fft = new KissFFTWrapper(512);
     }
 
     private int getMaxIndexOfFrequencies(float[] array) {
